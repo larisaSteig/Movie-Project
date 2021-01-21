@@ -40,17 +40,51 @@ const resultsWrapper = document.querySelector(".results");
 const onInput= async event => {
     const movies = await fetchData(event.target.value); /**because fetchData is async function, you have to use await word to wait for the function to return to you with the data */
     
+    if(!movies.length) {
+        dropdown.classList.remove('is-active');
+        return;
+    }
+
+
+    resultsWrapper.innerHTML = '';
+    dropdown.classList.add("is-active");
+
     for (let movie of movies) {
-        const div = document.createElement('div')
-
-        div.innerHTML = `
-            <img src=${movie.Poster} />
-            <h1>${movie.Title}</h1>
+        const option = document.createElement('a')
+        const imgSrc = movie.Poster ==="N/A" ? "" : movie.Poster;
+        
+        option.classList.add("dropdown-item")
+        option.innerHTML = `
+            <img src=${imgSrc} />
+            ${movie.Title}
         `;
+        option.addEventListener('click',()=>{
+            dropdown.classList.remove("is-active");
+            input.value = movie.Title;
+            onMovieSelect(movie);
+        })
 
-        document.querySelector('#target').appendChild(div);
+        resultsWrapper.appendChild(option);
     }
   };
  
  input.addEventListener('input', debounce(onInput,500))
+
+ /**Code to close the drodown menu when it is clicked outside of root element */
+ document.addEventListener('click', event=>{
+     if (!root.contains(event.target)){
+         dropdown.classList.remove('is-active')
+     }
+ })
 /*******************************************End of DEBOUNCE */
+
+const onMovieSelect = async movie =>{
+    const response = await axios.get('http://www.omdbapi.com/', {
+        params : {
+            apikey: '215f4bc2',
+            i: movie.imdbID
+        }
+    })
+
+    console.log(response.data)
+}

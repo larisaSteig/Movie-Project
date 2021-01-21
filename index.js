@@ -18,7 +18,20 @@ const fetchData = async (searchTerm) => {
     return response.data.Search /**Search is the part of the response.data collection and start with S, thats why we are using it this way */
 }; 
 
+const root = document.querySelector('.autocomplete')
+root.innerHTML = `
+    <label><b>Search For a Movie</b></label>
+    <input class="input"/>
+    <div class="dropdown">
+        <div class="dropdown-menu">
+            <div class="dropdown-content results"></div>
+        </div>
+    </div>
+`;
+
 const input = document.querySelector('input');
+const dropdown = document.querySelector('.dropdown');
+const resultsWrapper = document.querySelector(".results");
 
 /**Debounce function ***** moved to utils.js to make a file better to read/
 
